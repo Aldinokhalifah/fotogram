@@ -1,11 +1,13 @@
 import express, { type Request, type Response, type NextFunction } from 'express';
 import { testConnection } from './src/config/db';
 import authRoute from './src/routes/authRoute';
+import cookieParser from 'cookie-parser';
 
 const app = express();
 const port = 3000;
 
 app.use(express.json());
+app.use(cookieParser())
 
 app.get('/', (req: Request, res: Response) => {
     res.send('Halo! Express ini berjalan di atas runtime Bun 🚀');

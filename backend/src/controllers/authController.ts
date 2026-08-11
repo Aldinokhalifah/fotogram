@@ -55,4 +55,22 @@ export class AuthController {
             }
         }
     }
+
+    logoutUser = async (req: Request, res: Response): Promise<void> => {
+            try {
+                res.clearCookie('token', {
+                    httpOnly: true,
+                    secure: process.env.NODE_ENV === 'production',
+                    sameSite: 'lax',
+                })
+
+                res.status(200).json({ status: 'success', message: 'Logout berhasil'});
+            } catch (error) {
+                if (error instanceof Error) {
+                    res.status(400).json({ status: 'error', message: error.message });
+                } else {
+                    res.status(500).json({ status: "error", message: "Internal Server Error" });
+                }
+            }
+    }
 }
