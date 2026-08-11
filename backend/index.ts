@@ -1,5 +1,6 @@
 import express, { type Request, type Response, type NextFunction } from 'express';
 import { testConnection } from './src/config/db';
+import authRoute from './src/routes/authRoute';
 
 const app = express();
 const port = 3000;
@@ -23,6 +24,8 @@ app.get('/test-connection', async (req: Request, res: Response) => {
         });
     }
 })
+
+app.use("/api/auth", authRoute)
 
 async function startServer() {
     const ok = await testConnection();
