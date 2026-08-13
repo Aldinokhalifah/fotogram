@@ -1,6 +1,7 @@
-import express, { type Request, type Response, type NextFunction } from 'express';
+import express, { type Request, type Response } from 'express';
 import { testConnection } from './src/config/db';
 import authRoute from './src/routes/authRoute';
+import userRoute from './src/routes/userRoute';
 import cookieParser from 'cookie-parser';
 
 const app = express();
@@ -28,6 +29,7 @@ app.get('/test-connection', async (req: Request, res: Response) => {
 })
 
 app.use("/api/auth", authRoute)
+app.use("/api/users", userRoute)
 
 async function startServer() {
     const ok = await testConnection();
