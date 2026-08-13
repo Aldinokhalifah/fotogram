@@ -1,8 +1,23 @@
 import { UserService } from "../services/userService";
+import type { PublicUserProfile, UpdateUserInput, User } from "../types/User";
 import type { Request, Response } from "express";
 
 export class UserController {
     private userService = new UserService();
+
+    private sanitizePrivateUser(user: User) {
+        const { password_hash, ...safeUser } = user;
+        return safeUser;
+    }
+
+    private sanitizePublicUser(user: User): PublicUserProfile {
+        return {
+            id: user.id,
+            name: user.name,
+            username: user.username,
+            created_at: user.created_at,
+        };
+    }
 
     getMe = async (req: Request, res: Response): Promise<void> => {
         try {
@@ -21,7 +36,8 @@ export class UserController {
 
             res.status(200).json({
                 status: "success",
-                data: user,
+                message: "Berhasil mengambil data user",
+                data: this.sanitizePrivateUser(user),
             });
         } catch (error) {
             if (error instanceof Error) {
@@ -51,7 +67,7 @@ export class UserController {
 
             res.status(200).json({
                 status: "success",
-                data: user,
+                data: this.sanitizePublicUser(user),
             });
         } catch (error) {
             if (error instanceof Error) {
@@ -84,12 +100,12 @@ export class UserController {
             }
 
             const { name, email, username, password } = req.body;
-            const payload: Partial<{ name: string; email: string; username: string; password_hash: string }> = {};
+            const payload: UpdateUserInput = {};
 
             if (name !== undefined) payload.name = name;
             if (email !== undefined) payload.email = email;
             if (username !== undefined) payload.username = username;
-            if (password !== undefined) payload.password_hash = password;
+            if (password !== undefined) payload.password = password;
 
             if (Object.keys(payload).length === 0) {
                 res.status(400).json({ status: "error", message: "Minimal satu field harus diubah" });
@@ -97,11 +113,12 @@ export class UserController {
             }
 
             const updatedUser = await this.userService.updateUser(id, payload);
+            const safeUser = updatedUser ? this.sanitizePrivateUser(updatedUser) : undefined;
 
             res.status(200).json({
                 status: "success",
                 message: "User berhasil diperbarui",
-                data: updatedUser,
+                data: safeUser,
             });
         } catch (error) {
             if (error instanceof Error) {
@@ -138,6 +155,12 @@ export class UserController {
                 res.status(404).json({ status: "error", message: "User tidak ditemukan" });
                 return;
             }
+
+            res.clearCookie('token', {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'lax',
+            });
 
             res.status(200).json({
                 status: "success",

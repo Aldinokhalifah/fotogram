@@ -1,5 +1,5 @@
 import { UserRepository } from "../repositories/userRepository";
-import type { User } from "../types/User";
+import type { UpdateUserInput, User } from "../types/User";
 
 export class UserService {
     private userRepo = new UserRepository();
@@ -12,36 +12,43 @@ export class UserService {
         return await this.userRepo.findByUsername(username);
     }
 
-    async updateUser(id: string, data: Partial<User>): Promise<User | undefined> {
+    async updateUser(id: string, data: UpdateUserInput): Promise<User | undefined> {
         const existingUser = await this.userRepo.findById(id);
         if (!existingUser) {
             throw new Error("User tidak ditemukan");
         }
 
-        if (data.email && data.email !== existingUser.email) {
-            const existingEmail = await this.userRepo.findByEmail(data.email);
-            if (existingEmail && existingEmail.id !== id) {
-                throw new Error("Email sudah terdaftar");
+        const updateData: Partial<User> = {};
+
+        if (data.name !== undefined) updateData.name = data.name;
+        if (data.email !== undefined) {
+            if (data.email !== existingUser.email) {
+                const existingEmail = await this.userRepo.findByEmail(data.email);
+                if (existingEmail && existingEmail.id !== id) {
+                    throw new Error("Email sudah terdaftar");
+                }
             }
+            updateData.email = data.email;
         }
 
-        if (data.username && data.username !== existingUser.username) {
-            const existingUsername = await this.userRepo.findByUsername(data.username);
-            if (existingUsername && existingUsername.id !== id) {
-                throw new Error("Username sudah terpakai");
+        if (data.username !== undefined) {
+            if (data.username !== existingUser.username) {
+                const existingUsername = await this.userRepo.findByUsername(data.username);
+                if (existingUsername && existingUsername.id !== id) {
+                    throw new Error("Username sudah terpakai");
+                }
             }
+            updateData.username = data.username;
         }
 
-        if (data.password_hash) {
-            const passwordHash = await Bun.password.hash(data.password_hash, {
+        if (data.password) {
+            updateData.password_hash = await Bun.password.hash(data.password, {
                 algorithm: "bcrypt",
                 cost: 10,
             });
-
-            data.password_hash = passwordHash;
         }
 
-        return await this.userRepo.updateUser(id, data);
+        return await this.userRepo.updateUser(id, updateData);
     }
 
     async deleteUser(id: string): Promise<boolean> {

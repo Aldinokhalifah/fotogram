@@ -1,22 +1,21 @@
 import { UserRepository } from "../repositories/userRepository";
-import { type User } from "../types/User";
+import type { RegisterUserInput, User } from "../types/User";
 import jwt from 'jsonwebtoken';
-
 
 export class AuthService {
     private userRepo = new UserRepository();
 
-    async registerUser(user: User): Promise<User | undefined> {
-        if(!user.name) {
+    async registerUser(user: RegisterUserInput): Promise<User | undefined> {
+        if (!user.name) {
             throw new Error('Nama user wajib diisi');
-        } else if(!user.email) {
+        } else if (!user.email) {
             throw new Error('Email user wajib diisi');
-        } else if(!user.password_hash) {
+        } else if (!user.password) {
             throw new Error('Password user wajib diisi');
         }
 
         const existingEmail = await this.userRepo.findByEmail(user.email);
-        if (existingEmail?.email) {
+        if (existingEmail) {
             throw new Error("Email sudah terdaftar");
         }
 
@@ -25,10 +24,10 @@ export class AuthService {
             throw new Error("Username sudah terpakai");
         }
 
-        const password_hash = await Bun.password.hash(user.password_hash, {
-                algorithm: "bcrypt",
-                cost: 10,
-            })
+        const password_hash = await Bun.password.hash(user.password, {
+            algorithm: "bcrypt",
+            cost: 10,
+        });
 
         const createdUser = await this.userRepo.createUser({
             name: user.name,
@@ -36,8 +35,8 @@ export class AuthService {
             username: user.username,
             password_hash: password_hash,
             created_at: new Date(),
-            updated_at: new Date()
-        })
+            updated_at: new Date(),
+        });
 
         return createdUser;
     }
