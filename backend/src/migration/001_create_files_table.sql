@@ -8,3 +8,5 @@ CREATE TABLE files (
     uploaded_at TIMESTAMP DEFAULT NOW(),
     status VARCHAR(20) NOT NULL CHECK (status IN('pending', 'completed', 'failed'))
 )
+
+CREATE INDEX idx_files_user_uploaded ON files (user_id, uploaded_at DESC);
