@@ -2,6 +2,7 @@ import express, { type Request, type Response } from 'express';
 import { testConnection } from './src/config/db';
 import authRoute from './src/routes/authRoute';
 import userRoute from './src/routes/userRoute';
+import fileRoute from './src/routes/fileRoute';
 import cookieParser from 'cookie-parser';
 
 const app = express();
@@ -30,6 +31,7 @@ app.get('/test-connection', async (req: Request, res: Response) => {
 
 app.use("/api/auth", authRoute)
 app.use("/api/users", userRoute)
+app.use("/api/files", fileRoute)
 
 async function startServer() {
     const ok = await testConnection();
