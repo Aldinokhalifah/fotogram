@@ -9,7 +9,7 @@ export class FileService {
 
     async generateUploadUrl(userId: string, filename: string, fileType: string, fileSize: number): Promise<{ uploadUrl: string; fileId: string }> {
 
-        const objectKey = userId + '/' + (fileType.split('/')[0] === 'video' ? "videos" : "photos") + '/' + randomUUID() + '.' + path.extname(filename);
+        const objectKey = userId + '/' + (fileType.split('/')[0] === 'video' ? "videos" : "photos") + '/' + randomUUID() + path.extname(filename);
 
         const preUrl = await minioClient.presignedPutObject(process.env.BUCKET_NAME as string, objectKey, parseInt(process.env.EXPIRES_TIME as string));
 
