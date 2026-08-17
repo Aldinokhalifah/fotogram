@@ -1,19 +1,21 @@
 import { AuthService } from "../services/authService";
 import type { Request, Response } from "express";
+import { RegisterSchema, LoginSchema } from "../schema/authSchema";
 
 export class AuthController {
     private authService = new AuthService();
 
     registerUser = async (req: Request, res: Response): Promise<void> => {
         try {
-            const user = req.body;
+            const parsed = RegisterSchema.safeParse(req.body);
 
-            if (!user || Object.keys(user).length === 0) {
-                res.status(400).json({ status: 'error', message: 'Body user wajib diisi' });
+            if (!parsed.success) {
+                const message = parsed.error.issues[0]?.message ?? 'Data tidak valid';
+                res.status(400).json({ status: 'error', message });
                 return;
             }
 
-            const response = await this.authService.registerUser(user);
+            const response = await this.authService.registerUser(parsed.data);
 
             res.status(201).json({
                 status: 'success',
@@ -31,12 +33,15 @@ export class AuthController {
 
     loginUser = async (req: Request, res: Response): Promise<void> => {
         try {
-            const { email, password } = req.body;
-            if (!email || !password) {
-                res.status(400).json({ status: 'error', message: 'Email dan password wajib diisi' });
+            const parsed = LoginSchema.safeParse(req.body);
+
+            if (!parsed.success) {
+                const message = parsed.error.issues[0]?.message ?? 'Data tidak valid';
+                res.status(400).json({ status: 'error', message });
                 return;
             }
 
+            const { email, password } = parsed.data;
             const token = await this.authService.loginUser(email, password);
 
             res.cookie('token', token, {

@@ -1,18 +1,12 @@
 import { UserRepository } from "../repositories/userRepository";
+import type { RegisterInput } from "../schema/authSchema";
 import type { RegisterUserInput, User } from "../types/User";
 import jwt from 'jsonwebtoken';
 
 export class AuthService {
     private userRepo = new UserRepository();
 
-    async registerUser(user: RegisterUserInput): Promise<User | undefined> {
-        if (!user.name) {
-            throw new Error('Nama user wajib diisi');
-        } else if (!user.email) {
-            throw new Error('Email user wajib diisi');
-        } else if (!user.password) {
-            throw new Error('Password user wajib diisi');
-        }
+    async registerUser(user: RegisterInput): Promise<User | undefined> {
 
         const existingEmail = await this.userRepo.findByEmail(user.email);
         if (existingEmail) {
