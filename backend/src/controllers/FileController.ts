@@ -6,7 +6,7 @@ export class FileController {
 
     uploadFile = async(req: Request, res: Response): Promise<void> => {
         try {
-            const { filename, fileType, fileSize } = req.body;
+            const { filename, fileType, fileSize, caption } = req.body;
             const userId = req.user?.id;
 
             if (!userId) {
@@ -29,7 +29,7 @@ export class FileController {
                 return;
             }
 
-            const file = await this.fileService.generateUploadUrl(userId, filename, fileType, fileSize);
+            const file = await this.fileService.generateUploadUrl(userId, filename, fileType, fileSize, caption);
 
             res.status(201).json({
                 status: "success",

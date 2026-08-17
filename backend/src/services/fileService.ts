@@ -7,7 +7,7 @@ import type { File, FileStatus } from "../types/File";
 export class FileService {
     private fileRepo = new FileRepository();
 
-    async generateUploadUrl(userId: string, filename: string, fileType: string, fileSize: number): Promise<{ uploadUrl: string; fileId: string }> {
+    async generateUploadUrl(userId: string, filename: string, fileType: string, fileSize: number, caption?: string): Promise<{ uploadUrl: string; fileId: string }> {
 
         const objectKey = userId + '/' + (fileType.split('/')[0] === 'video' ? "videos" : "photos") + '/' + randomUUID() + path.extname(filename);
 
@@ -19,7 +19,8 @@ export class FileService {
             name_file: filename,
             type: fileType,
             size_byte: fileSize,
-            status: 'pending'
+            status: 'pending',
+            caption: caption
         });
 
         return { uploadUrl: preUrl, fileId: createFile.id as string };

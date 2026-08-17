@@ -10,3 +10,5 @@ CREATE TABLE files (
 )
 
 CREATE INDEX idx_files_user_uploaded ON files (user_id, uploaded_at DESC);
+
+ALTER TABLE files ADD caption VARCHAR(200);

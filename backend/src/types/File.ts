@@ -9,6 +9,7 @@ export interface File {
 	size_byte: number;
 	uploaded_at?: Date;
 	status: FileStatus;
+	caption?: string;
 }
 
 export interface CreateFileInput {
@@ -18,6 +19,7 @@ export interface CreateFileInput {
 	type: string;
 	size_byte: number;
 	status: FileStatus;
+	caption?: string;
 }
 
 export interface UpdateFileInput {
@@ -26,4 +28,5 @@ export interface UpdateFileInput {
 	type?: string;
 	size_byte?: number;
 	status?: FileStatus;
+	caption?: string;
 }

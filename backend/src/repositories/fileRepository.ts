@@ -4,9 +4,9 @@ import type { CreateFileInput, File, FileStatus } from "../types/File";
 export class FileRepository {
     async createFile(file: CreateFileInput): Promise<File> {
         const query = `
-        INSERT INTO files (user_id, path_file, name_file, type, size_byte, status)
-        VALUES ($1, $2, $3, $4, $5, $6)
-        RETURNING id, user_id, path_file, name_file, type, size_byte, uploaded_at, status`;
+        INSERT INTO files (user_id, path_file, name_file, type, size_byte, status, caption)
+        VALUES ($1, $2, $3, $4, $5, $6, $7)
+        RETURNING id, user_id, path_file, name_file, type, size_byte, uploaded_at, status, caption`;
 
         const result = await db.query(query, [
             file.user_id,
@@ -14,7 +14,8 @@ export class FileRepository {
             file.name_file,
             file.type,
             file.size_byte,
-            file.status
+            file.status,
+            file.caption
         ])
 
         return result.rows[0]
