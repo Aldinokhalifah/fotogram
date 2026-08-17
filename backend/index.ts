@@ -4,10 +4,34 @@ import authRoute from './src/routes/authRoute';
 import userRoute from './src/routes/userRoute';
 import fileRoute from './src/routes/fileRoute';
 import cookieParser from 'cookie-parser';
+import cors from 'cors'
 
 const app = express();
 const port = 3000;
 
+const frontend_url = process.env.FRONTEND_URL;
+if(!frontend_url) throw new Error('FRONTEND_URL environment variable is required!');
+
+const allowedOrigin = process.env.FRONTEND_URL;
+
+// Strongly typed CORS configurations
+const corsOptions: cors.CorsOptions = {
+    origin: (origin, callback) => {
+        // Allow requests with no origin (like mobile apps or curl requests)
+        if (!origin) return callback(null, true);
+        
+        if (origin === allowedOrigin) {
+        callback(null, true);
+        } else {
+        callback(new Error('Not allowed by CORS'));
+        }
+    },
+    methods: ['GET', 'POST', 'PATCH', 'DELETE'],
+    credentials: true, // Allow cookies to be sent
+    optionsSuccessStatus: 200 // Some legacy browsers choke on 204
+};
+
+app.use(cors(corsOptions))
 app.use(express.json());
 app.use(cookieParser())
 
