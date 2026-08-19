@@ -8,13 +8,13 @@ export const authService = {
             method: 'POST',
             body: JSON.stringify(data)
     }),
-    login: ({email, password}: { email: string, password: string }): Promise<ApiResponse<{ status: string; message: string }>> =>
-        apiClient<{ status: string; message: string }>('/auth/login', {
+    login: ({email, password}: { email: string, password: string }): Promise<ApiResponse<null>> =>
+        apiClient<null>('/auth/login', {
             method: 'POST',
             body: JSON.stringify({email, password})
         }),
-    logout: (): Promise<ApiResponse<{ status: string; message: string }>> =>
-        apiClient<{ status: string; message: string }>('/auth/logout'),
+    logout: (): Promise<ApiResponse<null>> =>
+        apiClient<null>('/auth/logout'),
     getMe: (): Promise<ApiResponse<UserResponse>> =>
         apiClient<UserResponse>('/users/me')
 }
