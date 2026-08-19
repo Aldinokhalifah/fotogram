@@ -51,7 +51,7 @@ export class AuthController {
                 maxAge: 60 * 60 * 1000,
             });
 
-            res.status(200).json({ status: 'success', message: 'Login berhasil'});
+            res.status(200).json({ status: 'success', message: 'Login berhasil', data: null});
         } catch (error) {
             if (error instanceof Error) {
                 res.status(400).json({ status: 'error', message: error.message });
@@ -69,7 +69,7 @@ export class AuthController {
                     sameSite: 'lax',
                 })
 
-                res.status(200).json({ status: 'success', message: 'Logout berhasil'});
+                res.status(200).json({ status: 'success', message: 'Logout berhasil', data: null});
             } catch (error) {
                 if (error instanceof Error) {
                     res.status(400).json({ status: 'error', message: error.message });
