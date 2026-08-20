@@ -44,18 +44,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             const user = await authService.getMe();
             setUser(user.data ?? null);
         } catch {
-            return null;
         }
     }, []);
 
     const logout = useCallback(async () => {
         try {
-            const isLoggedOut = await authService.logout();
-
-            if (!isLoggedOut) {
-                throw new Error("Logout failed");
-            }
-
+            await authService.logout();
             setUser(null);
         } catch (error) {
             if (error instanceof Error) throw error;
