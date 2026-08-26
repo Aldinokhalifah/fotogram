@@ -69,6 +69,24 @@ export class FileService {
         return filesWithUrl;
     }
 
+    async listPublicFiles(userId: string, limit: number = 10, offset: number = 0): Promise<Array<File & { url: string }>> {
+        const files = await this.fileRepo.findPublicFilesByUserId(userId, limit, offset);
+
+        const filesWithUrl = await Promise.all(
+            files.map(async (file) => {
+                const url = await minioClient.presignedGetObject(process.env.BUCKET_NAME as string, file.path_file, Number(process.env.EXPIRES_TIME ?? 3600)
+            );
+
+            return {
+                ...file,
+                url
+            };
+            })
+        );
+
+        return filesWithUrl;
+    }
+
     async deleteFile(fileId: string, userId: string): Promise<boolean> {
         const file = await this.fileRepo.findById(fileId);
 

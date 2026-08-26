@@ -122,6 +122,44 @@ export class FileController {
         }
     }
 
+    listPublicFiles = async(req: Request, res: Response): Promise<void> => {
+        try {
+            const userId = req.params?.id;
+            const limit = Number(req.query.limit ?? 10);
+            const offset = Number(req.query.offset ?? 0);
+
+            if (!userId) {
+                res.status(400).json({ status: "error", message: "ID user wajib diisi" });
+                return;
+            }
+
+            if (!Number.isFinite(limit) || limit <= 0) {
+                res.status(400).json({ status: "error", message: "Limit harus berupa angka lebih dari 0" });
+                return;
+            }
+
+            if (!Number.isFinite(offset) || offset < 0) {
+                res.status(400).json({ status: "error", message: "Offset harus berupa angka lebih dari atau sama dengan 0" });
+                return;
+            }
+
+            const files = await this.fileService.listPublicFiles(userId as string, limit, offset);
+
+            res.status(200).json({
+                status: "success",
+                message: "Semua file berhasil diambil",
+                data: files,
+            });
+        } catch (error) {
+            if (error instanceof Error) {
+                res.status(400).json({ status: "error", message: error.message });
+                return;
+            }
+
+            res.status(500).json({ status: "error", message: "Internal Server Error" });
+        }
+    }
+
     deleteFile = async(req: Request, res: Response): Promise<void> => {
         try {
             const id = req.params.id;

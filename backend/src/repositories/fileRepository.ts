@@ -48,6 +48,20 @@ export class FileRepository {
         return result.rows as File[]
     }
 
+    async findPublicFilesByUserId(userId: string, limit: number, offset: number): Promise<File[]> {
+        const query = `
+        SELECT id, user_id, path_file, name_file, type, size_byte, uploaded_at, status FROM files
+        WHERE user_id = $1 AND status = 'completed' ORDER BY uploaded_at DESC LIMIT $2 OFFSET $3`;
+
+        const result = await db.query(query, [
+            userId,
+            limit,
+            offset
+        ])
+
+        return result.rows as File[]
+    }
+
     async findById(id: string): Promise<File| undefined> {
         const query = `
         SELECT id, user_id, path_file, name_file, type, size_byte, uploaded_at, status FROM files
