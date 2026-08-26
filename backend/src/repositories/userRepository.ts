@@ -48,6 +48,20 @@ export class UserRepository {
         return result.rows[0] as User | undefined;
     }
 
+        async searchByUsername(keyword: string, limit: number): Promise<User[] | undefined> {
+            const query = `
+            SELECT id, name, username, created_at FROM users 
+            WHERE username ILIKE $1 
+            LIMIT $2`;
+    
+            const result = await db.query(query, [
+                `%${keyword}%`, 
+                limit
+            ])
+    
+            return result.rows as User[];
+        }
+
     async updateUser(id: string, data: Partial<User>): Promise<User | undefined> {
         const fields: string[] = [];
         const values: unknown[] = [];

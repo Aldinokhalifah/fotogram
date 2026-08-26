@@ -12,6 +12,13 @@ export class UserService {
         return await this.userRepo.findByUsername(username);
     }
 
+    async searchUsers(keyword: string, limit: number): Promise<User[] | undefined> {
+        if(keyword.length == 0) {
+            throw new Error("Keyword tidak boleh kosong!")
+        }
+        return await this.userRepo.searchByUsername(keyword, limit);
+    }
+
     async updateUser(id: string, data: UpdateUserInput): Promise<User | undefined> {
         const existingUser = await this.userRepo.findById(id);
         if (!existingUser) {

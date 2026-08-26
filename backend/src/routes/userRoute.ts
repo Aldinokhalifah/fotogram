@@ -5,6 +5,7 @@ import auth from "../middleware/auth";
 const router = Router();
 const userController = new UserController();
 
+router.get("/", auth, userController.searchUser);
 router.get("/me", auth, userController.getMe);
 router.get("/:id", auth, userController.getUserById);
 router.patch("/:id", auth, userController.updateUser);

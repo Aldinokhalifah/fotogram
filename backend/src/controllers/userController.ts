@@ -19,6 +19,10 @@ export class UserController {
         };
     }
 
+    private sanitizePublicUsers(users?: User[]): PublicUserProfile[] {
+        return (users ?? []).map(user => this.sanitizePublicUser(user));
+    }
+
     getMe = async (req: Request, res: Response): Promise<void> => {
         try {
             const userId = req.user?.id;
@@ -67,6 +71,7 @@ export class UserController {
 
             res.status(200).json({
                 status: "success",
+                message: "Berhasil mengambil data user",
                 data: this.sanitizePublicUser(user),
             });
         } catch (error) {
@@ -78,6 +83,33 @@ export class UserController {
             res.status(500).json({ status: "error", message: "Internal Server Error" });
         }
     };
+
+    searchUser = async (req: Request, res: Response): Promise<void> => {
+        try {
+            const keyword = req.query?.search
+            const limit = req.query?.limit || 10
+
+            if (!keyword) {
+                res.status(400).json({ status: "error", message: "Keyword wajib diisi!" });
+                return;
+            }
+
+            const users = await this.userService.searchUsers(keyword as string, parseInt(limit as string));
+
+            res.status(200).json({
+                status: "success",
+                message: "Berhasil mengambil data users",
+                data: this.sanitizePublicUsers(users),
+            })
+        } catch (error) {
+            if (error instanceof Error) {
+                res.status(400).json({ status: "error", message: error.message });
+                return;
+            }
+
+            res.status(500).json({ status: "error", message: "Internal Server Error" });
+        }
+    }
 
     updateUser = async (req: Request, res: Response): Promise<void> => {
         try {
