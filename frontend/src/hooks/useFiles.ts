@@ -11,19 +11,30 @@ import toast from 'react-hot-toast';
 
 export const fileQueryKeys = {
     all: ['files'] as const,
-    list: (limit: number, offset: number) => ['files', { limit, offset }] as const,
+    mine: (limit: number, offset: number) => ['files', 'mine', { limit, offset }] as const,
+    byUser: (userId: string, limit: number, offset: number) => ['files', 'user', userId, { limit, offset }] as const,
 };
 
 export function useFiles(limit: number, offset: number) {
     return useQuery({
-        queryKey: fileQueryKeys.list(limit, offset),
+        queryKey: fileQueryKeys.mine(limit, offset),
         queryFn: () => fileService.getFiles({ limit, offset }),
     });
+}
+
+export function usePublicFiles(userId: string, limit: number, offset: number) {
+    return useQuery({
+        queryKey: fileQueryKeys.byUser(userId, limit, offset),
+        queryFn: () => fileService.getPublicFiles(userId, limit, offset)
+    })
 }
 
 export function useUploadFile() {
     return useMutation({
         mutationFn: (data: CreateUploadUrlInput) => fileService.uploadFile(data),
+        onError: (_error) => {
+            toast.error(_error.message || 'Error saat upload file')
+        }
     });
 }
 

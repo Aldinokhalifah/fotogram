@@ -15,6 +15,8 @@ export const fileService = {
         }),
     getFiles: ({limit, offset}: {limit: number, offset: number}): Promise<ApiResponse<FileResponse[]>> =>
         apiClient<FileResponse[]>(`/files?limit=${limit}&offset=${offset}`),
+    getPublicFiles: (userId: string, limit: number, offset: number): Promise<ApiResponse<FileResponse[]>> => 
+        apiClient<FileResponse[]>(`/users/${userId}/files?limit=${limit}&offset=${offset}`),
     deleteFile: (fileId: string): Promise<ApiResponse<boolean>> =>
         apiClient<boolean>(`/files/${fileId}`, {
             method: 'DELETE',
