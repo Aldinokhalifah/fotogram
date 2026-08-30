@@ -33,7 +33,7 @@ export function useUploadFile() {
     return useMutation({
         mutationFn: (data: CreateUploadUrlInput) => fileService.uploadFile(data),
         onError: (_error) => {
-            toast.error(_error.message || 'Error saat upload file')
+            toast.error(_error.message || 'Error saat upload file');
         }
     });
 }
@@ -42,23 +42,22 @@ export function useConfirmUpload() {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: ({ fileId, status }: { fileId: string; status: FileStatus }) =>
+        mutationFn: ({ fileId, status }: { fileId: string, status: FileStatus }) =>
             fileService.confirmUpload(fileId, status),
-        onSuccess: (_response) => {
-            toast.success(_response.message);
+        onSuccess: () => {
             void queryClient.invalidateQueries({ queryKey: fileQueryKeys.all });
-        }, 
+        },
         onError: (_error) => {
-            toast.error(_error.message)
+            toast.error(_error.message);
         }
     });
 }
 
-export function useDeleteFile() {
+export function useDeleteFile(fileId: string) {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: (fileId: string) => fileService.deleteFile(fileId),
+        mutationFn: () => fileService.deleteFile(fileId),
         onSuccess: (_response) => {
             toast.success(_response.message);
             void queryClient.invalidateQueries({ queryKey: fileQueryKeys.all });
