@@ -8,6 +8,7 @@ import toast from 'react-hot-toast';
 export const userQueryKeys = {
     all: ['users'] as const,
     byId: (userId: string) => ['users', userId] as const,
+    byUsername: (keyword: string) => ['users', keyword] as const
 };
 
 export function useUser(userId: string | undefined) {
@@ -16,6 +17,14 @@ export function useUser(userId: string | undefined) {
         queryFn: () => userService.getById(userId as string),
         enabled: Boolean(userId),
     });
+}
+
+export function useSearchUsers(keyword: string) {
+    return useQuery({
+        queryKey: userQueryKeys.byUsername(keyword),
+        queryFn: () => userService.searchUsers(keyword),
+        enabled: Boolean(keyword)
+    })
 }
 
 export function useUpdateUser() {

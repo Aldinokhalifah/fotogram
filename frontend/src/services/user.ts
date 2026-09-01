@@ -5,6 +5,8 @@ import { PublicUserProfileResponse, UpdateUserInput, UserResponse } from "@/type
 export const userService = {
     getById: (userId: string):Promise<ApiResponse<PublicUserProfileResponse>> =>
         apiClient<PublicUserProfileResponse>(`/users/${userId}`),
+    searchUsers: (keyword: string): Promise<ApiResponse<UserResponse[]>> =>
+        apiClient<UserResponse[]>(`/users?search${keyword}`),
     updateUser: (data: UpdateUserInput, userId: string):Promise<ApiResponse<UserResponse>> =>
         apiClient<UserResponse>(`/users/${userId}`, {
             method: 'PATCH',
