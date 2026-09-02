@@ -26,7 +26,6 @@ export function useHandleUploadFile() {
 
         if (!success) {
             toast.error("File gagal diupload!");
-            throw new Error("Gagal upload file!");
         }
 
         toast.success("File berhasil diupload");

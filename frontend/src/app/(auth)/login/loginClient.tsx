@@ -21,7 +21,7 @@ export default function LoginPageClient() {
             const isLoggedIn = await authService.login(user);
             toast.success(isLoggedIn.message);
             await auth.refreshUser();
-            router.push('/')
+            router.push('/gallery')
         } catch (error) {
             if (error instanceof Error) toast.error(error.message);
         }

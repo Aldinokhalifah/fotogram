@@ -16,13 +16,13 @@ export default function UploadForm({ isOpen, onClose }: Props) {
     const { handleUploadFile, isUploading } = useHandleUploadFile()
     const fileInputRef = useRef<HTMLInputElement>(null)
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        if ('files' in e.target) {
-            const file = e.target.files ? e.target.files[0] : null;
-            setSelectedFile(file);
-        } else {
-            setCaption(e.target.value)
-        }
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files ? e.target.files[0] : null;
+        setSelectedFile(file);
+    }
+
+    const handleCaptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setCaption(e.target.value);
     }
 
     const handleDrop = (e: React.DragEvent) => {
@@ -107,7 +107,7 @@ export default function UploadForm({ isOpen, onClose }: Props) {
                             type="file"
                             accept="image/*,video/*"
                             className="hidden"
-                            onChange={handleChange}
+                            onChange={handleFileChange}
                         />
                     </div>
 
@@ -116,7 +116,7 @@ export default function UploadForm({ isOpen, onClose }: Props) {
                         type="text"
                         placeholder="Input Caption"
                         value={caption}
-                        onChange={handleChange}
+                        onChange={handleCaptionChange}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
                     />
 

@@ -36,7 +36,7 @@ export class FileRepository {
 
     async findAllByUserId(user_id: string, limit: number, offset: number): Promise<File[]> {
         const query = `
-        SELECT id, user_id, path_file, name_file, type, size_byte, uploaded_at, status FROM files
+        SELECT id, user_id, path_file, name_file, type, size_byte, uploaded_at, status, caption FROM files
         WHERE user_id = $1 ORDER BY uploaded_at DESC LIMIT $2 OFFSET $3`;
 
         const result = await db.query(query, [
@@ -50,7 +50,7 @@ export class FileRepository {
 
     async findPublicFilesByUserId(userId: string, limit: number, offset: number): Promise<File[]> {
         const query = `
-        SELECT id, user_id, path_file, name_file, type, size_byte, uploaded_at, status FROM files
+        SELECT id, user_id, path_file, name_file, type, size_byte, uploaded_at, status, caption FROM files
         WHERE user_id = $1 AND status = 'completed' ORDER BY uploaded_at DESC LIMIT $2 OFFSET $3`;
 
         const result = await db.query(query, [
@@ -64,7 +64,7 @@ export class FileRepository {
 
     async findById(id: string): Promise<File| undefined> {
         const query = `
-        SELECT id, user_id, path_file, name_file, type, size_byte, uploaded_at, status FROM files
+        SELECT id, user_id, path_file, name_file, type, size_byte, uploaded_at, status, caption FROM files
         WHERE id = $1`;
 
         const result = await db.query(query, [
