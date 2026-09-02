@@ -53,11 +53,11 @@ export function useConfirmUpload() {
     });
 }
 
-export function useDeleteFile(fileId: string) {
+export function useDeleteFile() {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: () => fileService.deleteFile(fileId),
+        mutationFn: (fileId: string) => fileService.deleteFile(fileId),
         onSuccess: (_response) => {
             toast.success(_response.message);
             void queryClient.invalidateQueries({ queryKey: fileQueryKeys.all });

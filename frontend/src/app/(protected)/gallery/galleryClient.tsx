@@ -1,17 +1,33 @@
 'use client';
 
+import { useEffect, useState } from 'react';
+import FileGrid from '@/components/gallery/FileGrid';
+import LoadingSpinner from '@/components/LoadingSpinner';
+
 type GalleryPageClientProps = {
     searchParams: Promise<{ userId?: string }>;
 };
 
 export default function GalleryPageClient({ searchParams }: GalleryPageClientProps) {
-    // Gunakan searchParams untuk menampilkan galeri user yang sesuai
-    // searchParams.userId = untuk menampilkan galeri user lain
-    // Jika tidak ada userId, tampilkan galeri user yang sedang login
-    
+    const [userId, setUserId] = useState<string | undefined>();
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        const getParams = async () => {
+            const params = await searchParams;
+            setUserId(params.userId);
+            setIsLoading(false);
+        };
+        getParams();
+    }, [searchParams]);
+
+    if (isLoading) {
+        return <LoadingSpinner/>;
+    }
+
     return (
-        <div className="">
-            {/* Implementasi galeri akan di sini */}
+        <div className="w-full">
+            <FileGrid />
         </div>
-    )
+    );
 }
