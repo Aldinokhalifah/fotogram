@@ -8,7 +8,7 @@ import toast from 'react-hot-toast';
 export const userQueryKeys = {
     all: ['users'] as const,
     byId: (userId: string) => ['users', userId] as const,
-    byUsername: (keyword: string) => ['users', keyword] as const
+    byUsername: (keyword: string) => ['users', 'search', keyword] as const
 };
 
 export function useUser(userId: string | undefined) {

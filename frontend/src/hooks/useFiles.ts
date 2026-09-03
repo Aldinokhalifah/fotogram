@@ -15,17 +15,19 @@ export const fileQueryKeys = {
     byUser: (userId: string, limit: number, offset: number) => ['files', 'user', userId, { limit, offset }] as const,
 };
 
-export function useFiles(limit: number, offset: number) {
+export function useFiles(limit: number, offset: number, enabled: boolean = true) {
     return useQuery({
         queryKey: fileQueryKeys.mine(limit, offset),
         queryFn: () => fileService.getFiles({ limit, offset }),
+        enabled,
     });
 }
 
 export function usePublicFiles(userId: string, limit: number, offset: number) {
     return useQuery({
         queryKey: fileQueryKeys.byUser(userId, limit, offset),
-        queryFn: () => fileService.getPublicFiles(userId, limit, offset)
+        queryFn: () => fileService.getPublicFiles(userId, limit, offset),
+        enabled: !!userId
     })
 }
 
