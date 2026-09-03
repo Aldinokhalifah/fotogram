@@ -7,6 +7,7 @@ import FileCard from "./FileCard";
 import FileDetailModal from "./FileDetailModal";
 import UploadForm from "./UploadForm";
 import LoadingSpinner from "../LoadingSpinner";
+import SearchBar from "./SearchBar";
 
 type Props = {
     userId?: string
@@ -59,6 +60,9 @@ export default function FileGrid({userId}: Props) {
             {/* Upload Form - dia sendiri udah handle modal wrapper-nya */}
             {!userId && ( <UploadForm isOpen={showUploadForm} onClose={handleCloseUploadForm} />)}
 
+            {/* Search Bar */}
+            <SearchBar />
+
             {/* File Grid */}
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                 {files && files.length > 0 ? (
@@ -71,7 +75,11 @@ export default function FileGrid({userId}: Props) {
                     ))
                 ) : (
                     <div className="col-span-full text-center py-12 text-gray-500">
-                        <p>Belum ada file. Mulai upload file Anda sekarang!</p>
+                        {userId ? (
+                            <p>User belum memiliki file.</p>
+                        ) : (
+                            <p>Belum ada file. Mulai upload file Anda sekarang!</p>
+                        )}
                     </div>
                 )}
             </div>
