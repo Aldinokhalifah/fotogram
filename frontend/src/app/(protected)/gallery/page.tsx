@@ -1,14 +1,24 @@
 import { Metadata } from "next";
 import GalleryPageClient from "./galleryClient";
+import { getGalleryMetadata } from "@/lib/getGalleryMetadata";
+import { cookies } from "next/headers";
 
-// type Props = {
-//     searchParams: Promise<{ userId?: string }>;
-// };
+interface Props {
+    searchParams: Promise<{ userId?: string | string[] }>;
+}
 
-export const metadata: Metadata = {
-    title: "Galeri Foto - FotoGram",
-    description: "Lihat dan kelola koleksi foto dan video kamu",
-};
+export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
+    const query = await searchParams;
+    const userId = Array.isArray(query.userId) ? query.userId[0] : query.userId;
+
+    const cookieStore = await cookies();
+    const cookieHeader = cookieStore.getAll()
+        .map(c => `${c.name}=${c.value}`)
+        .join('; ');
+
+    return getGalleryMetadata(userId, cookieHeader);
+}
+
 
 export default function Gallery() {
     return <GalleryPageClient />;
