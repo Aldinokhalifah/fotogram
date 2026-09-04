@@ -27,11 +27,11 @@ export async function getGalleryMetadata(userId: string | undefined, cookieHeade
         }
 
         return {
-            title: `${gallery.name} | Galeri Foto`,
-            description: `Lihat koleksi foto dan video dari ${gallery.name}`,
+            title: `@${gallery.username} | Galeri Foto`,
+            description: `Lihat koleksi foto dan video dari @${gallery.username}`,
             openGraph: {
-                title: gallery.name,
-                description: `Lihat koleksi foto dan video dari ${gallery.name}`,
+                title: gallery.username,
+                description: `Lihat koleksi foto dan video dari @${gallery.username}`,
                 type: 'website',
             },
         }
